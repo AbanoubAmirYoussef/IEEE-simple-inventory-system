@@ -5,10 +5,24 @@ function createItem(name, category, price, stock) {
     price: price || 0,
     stock: stock || 0,
     updateStock: function (newStock) {
-      this.stock = newStock;
+      if (typeof newStock === "number" && newStock >= 0) {
+        this.stock = newStock;
+        return "Stock updated successfully";
+      } else {
+        return "Invalid stock value";
+      }
     },
     applyDiscount: function (discount) {
-      this.price = this.price - discount;
+      if (
+        typeof discount === "number" &&
+        discount >= 0 &&
+        discount <= this.price
+      ) {
+        this.price -= discount;
+        return "Discount applied successfully";
+      } else {
+        return "Invalid discount value";
+      }
     },
   };
   return item;
@@ -19,6 +33,7 @@ let inventory = {
   addItem: function (item) {
     if (item) {
       this.items.push(item);
+      return "Item added successfully";
     } else {
       return "Can't add item";
     }
@@ -28,8 +43,10 @@ let inventory = {
       for (let i = 0; i < this.items.length; i++) {
         if (this.items[i].name === itemName) {
           this.items.splice(i, 1);
+          return "Item removed successfully";
         }
       }
+      return "Item not found";
     } else {
       return "Can't remove item without item name";
     }
@@ -41,8 +58,9 @@ let inventory = {
           return this.items[i];
         }
       }
+      return "Item not found";
     } else {
-      return "Can't add item without item name";
+      return "Can't get item without item name";
     }
   },
   filterItems: function (predicate) {
