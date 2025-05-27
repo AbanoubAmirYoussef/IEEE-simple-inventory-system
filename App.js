@@ -1,36 +1,53 @@
 function createItem(name, category, price, stock) {
-  let item = {
-    name: name || "Unknown",
-    category: category || "Unknown",
-    price: price || 0,
-    stock: stock || 0,
-    updateStock: function (newStock) {
-      if (typeof newStock === "number" && newStock >= 0) {
-        this.stock = newStock;
-        return "Stock updated successfully";
-      } else {
-        return "Invalid stock value";
+  let checkInventory = () => {
+    for (let i = 0; i < inventory.items.length; i++) {
+      if (inventory.items[i].name === name) {
+        return true;
       }
-    },
-    applyDiscount: function (discount) {
-      if (
-        typeof discount === "number" &&
-        discount >= 0 &&
-        discount <= this.price
-      ) {
-        this.price -= discount;
-        return "Discount applied successfully";
-      } else {
-        return "Invalid discount value";
-      }
-    },
+    }
+    return false;
   };
-  return item;
-}
 
+  if (!checkInventory()) {
+    let item = {
+      name: name || "Unknown",
+      category: category || "Unknown",
+      price: price || 0,
+      stock: stock || 0,
+      updateStock: function (newStock) {
+        if (typeof newStock === "number" && newStock >= 0) {
+          this.stock = newStock;
+          return "Stock updated successfully";
+        } else {
+          return "Invalid stock value";
+        }
+      },
+      applyDiscount: function (discount) {
+        if (
+          typeof discount === "number" &&
+          discount >= 0 &&
+          discount <= this.price
+        ) {
+          this.price -= discount;
+          return "Discount applied successfully";
+        } else {
+          return "Invalid discount value";
+        }
+      },
+    };
+    return item;
+  } else {
+    return "Item already exists";
+  }
+}
 let inventory = {
   items: [],
   addItem: function (item) {
+    for (let i = 0; i < this.items.length; i++) {
+      if (this.items[i].name === item.name) {
+        return "Item already exists";
+      }
+    }
     if (item) {
       this.items.push(item);
       return "Item added successfully";
@@ -78,7 +95,6 @@ let PhoneCharger = createItem("Phone Charger", "Electronics", 180, 15);
 let UsbC = createItem("UsbC", "Electronics", 45, 20);
 let Pen = createItem("Pen", "Library", 6, 12);
 let Notebook = createItem("Notebook", "Library", 10, 12);
-
 inventory.addItem(Laptop);
 inventory.addItem(PhoneCharger);
 inventory.addItem(Pen);
